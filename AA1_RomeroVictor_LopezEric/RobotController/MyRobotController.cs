@@ -38,7 +38,7 @@ namespace RobotController
         public string Hi()
         {
 
-            string s = "hello world from my Robot Controller";
+            string s = "Victor Romero, Eric Lopez";
             return s;
 
         }
@@ -163,7 +163,7 @@ namespace RobotController
         internal MyQuat Multiply(MyQuat q1, MyQuat q2) {
 
             //todo: change this so it returns a multiplication:
-            //hi
+            
             return NullQ;
 
         }
