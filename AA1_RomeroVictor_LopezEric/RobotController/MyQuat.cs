@@ -1,4 +1,5 @@
 using System;
+using System.Timers;
 
 namespace RobotController
 {
@@ -42,17 +43,37 @@ namespace RobotController
 
         public MyQuat Normalize()
         {
-            float length = (float)Math.Sqrt(x * x + y * y + z * z + w * w);
-            x /= length;
-            y /= length;
-            z /= length;
-            w /= length;
+            float magnitude = (float)Math.Sqrt(x * x + y * y + z * z + w * w);
+            x /= magnitude;
+            y /= magnitude;
+            z /= magnitude;
+            w /= magnitude;
             return this;
+        }
+
+        public static MyQuat operator *(MyQuat q1, MyQuat q2)
+        {
+            float w = (q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z);
+            float x = (q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y);
+            float y = (q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x);
+            float z = (q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w);
+
+            return new MyQuat(x, y, z, w);
+        }
+
+        public static MyQuat operator *(float scalar, MyQuat q)
+        {
+            return new MyQuat(scalar * q.w, scalar * q.x, scalar * q.y, scalar * q.z);
+        }
+
+        public static MyQuat Add(MyQuat q1, MyQuat q2)
+        {
+            return new MyQuat(q1.w + q2.w, q1.x + q2.x, q1.y + q2.y, q1.z + q2.z);
         }
 
         public string ToString()
         {
-            return "(" + x + ", " + y + ", " + z + ", " + w + ")";
+            return "(" + w + ", " + x + ", " + y + ", " + z + ")";
         }
 
 
@@ -66,24 +87,54 @@ namespace RobotController
             float halfAngleOfRotation = (angle / 2) * Utility.Deg2Rad;
             float sinRotAngle = (float)Math.Sin(halfAngleOfRotation);
 
-            float w = (float)Math.Cos(angle/2);
+            float w = (float)Math.Cos(halfAngleOfRotation);
             float x = axis.x * sinRotAngle;
             float y = axis.y * sinRotAngle;
             float z = axis.z * sinRotAngle;
 
-            return new MyQuat(x, y, z, w).Normalize();
+            return new MyQuat(x, y, z, w);
         }
 
+        public void ToAxisAngle(out MyVec axis, out float angle)
+        {
+            float v = (float)Math.Sqrt(1 - (w * w));
+            axis = new MyVec(x / v, y / v, z / v);
+            angle = 2 * (float)Math.Acos(w) * Utility.Rad2Deg;
+        }
+
+        public static MyQuat Lerp(MyQuat q1, MyQuat q2, float t)
+        {
+            // (1-t) p + t q
+            //MyVec initialAxis;
+            //float initialAngle;
+            //MyVec resultingAxis;
+            //float resultingAngle;
+
+            //q1.ToAxisAngle(out initialAxis, out initialAngle);
+            //q2.ToAxisAngle(out resultingAxis, out resultingAngle);
+
+            //MyVec axisT = ((1 - t) * initialAxis) + (t * resultingAxis);
+            //float angleT = ((1 - t) * initialAngle) + (t * resultingAngle);
+
+            MyQuat result;
+
+            result = Add(((1 - t) * q1), (t * q2));
+
+
+            return result;
+
+        }
+
+        //public static MyQuat Slerp(MyQuat q1, MyQuat q2, float t)
+        //{
+
+        //}
 
     }
 
 
 
-    public struct MyVec
-    {
 
-        public float x;
-        public float y;
-        public float z;
-    }
+
+
 }

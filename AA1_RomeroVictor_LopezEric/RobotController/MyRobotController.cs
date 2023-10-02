@@ -23,14 +23,18 @@ namespace RobotController
 
         //EX1: this function will place the robot in the initial position
 
-        //public void PutRobotStraight(out MyQuat rot0, out MyQuat rot1, out MyQuat rot2, out MyQuat rot3) {
+        public void PutRobotStraight(out MyQuat rot0, out MyQuat rot1, out MyQuat rot2, out MyQuat rot3)
+        {
+            if (_currentExercise != Exercise.EX_1)
+            {
+                _currentExercise = Exercise.EX_1;
+            }
 
-        //    //todo: change this, use the function Rotate declared below
-        //    rot0 = NullQ;
-        //    rot1 = NullQ;
-        //    rot2 = NullQ;
-        //    rot3 = NullQ;
-        //}
+            rot0 = Rotate(MyQuat.NullQ, MyVec.up, initialAngles[0]);
+            rot1 = Rotate(rot0, MyVec.right, initialAngles[1]);
+            rot2 = Rotate(rot1, MyVec.right, initialAngles[2]);
+            rot3 = Rotate(rot2, MyVec.right, initialAngles[3]);
+        }
 
 
 
@@ -108,6 +112,7 @@ namespace RobotController
         //public static MyQuat GetTwist(MyQuat rot3)
         //{
         //    //todo: change the return value for exercise 3
+        //  
         //    return NullQ;
 
         //}
@@ -129,18 +134,21 @@ namespace RobotController
             float y = (q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x);
             float z = (q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w);
 
-            return new MyQuat(x, y, z, w).Normalize();
+            return new MyQuat(x, y, z, w);
         }
 
         internal MyQuat Rotate(MyQuat currentRotation, MyVec axis, float angle)
         {
-
-            //todo: change this so it takes currentRotation, and calculate a new quaternion rotated by an angle "angle" radians along the normalized axis "axis"
             return Multiply(currentRotation, MyQuat.FromAxisAngle(axis, angle));
-
         }
 
         //todo: add here all the functions needed
+
+        enum Exercise { NONE, EX_1, EX_2, EX_3 };
+        private Exercise _currentExercise = Exercise.NONE;
+
+        //Ex1
+        private float[] initialAngles = { 73f, 350f, 94f, 20f };
 
         #endregion
 
