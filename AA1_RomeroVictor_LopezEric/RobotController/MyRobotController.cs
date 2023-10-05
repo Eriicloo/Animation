@@ -129,12 +129,8 @@ namespace RobotController
 
         internal MyQuat Multiply(MyQuat q1, MyQuat q2) {
 
-            float w = (q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z);
-            float x = (q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y);
-            float y = (q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x);
-            float z = (q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w);
-
-            return new MyQuat(x, y, z, w);
+            //The * operator is overloaded in MyQuat.cs for quats multiplication and quat with scalar
+            return q1 * q2;
         }
 
         internal MyQuat Rotate(MyQuat currentRotation, MyVec axis, float angle)
@@ -148,6 +144,7 @@ namespace RobotController
         private Exercise _currentExercise = Exercise.NONE;
 
         //Ex1
+        //private float[] initialAngles = { 73f, 350f, 94f, 20f };
         private float[] initialAngles = { 73f, 350f, 94f, 20f };
 
         #endregion

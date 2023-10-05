@@ -43,11 +43,11 @@ namespace RobotController
 
         public MyQuat Normalize()
         {
-            float magnitude = (float)Math.Sqrt(x * x + y * y + z * z + w * w);
+            float magnitude = (float)Math.Sqrt(w * w + x * x + y * y + z * z);
+            w /= magnitude;
             x /= magnitude;
             y /= magnitude;
             z /= magnitude;
-            w /= magnitude;
             return this;
         }
 
@@ -58,7 +58,7 @@ namespace RobotController
             float y = (q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x);
             float z = (q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w);
 
-            return new MyQuat(x, y, z, w);
+            return new MyQuat(w, x, y, z);
         }
 
         public static MyQuat operator *(float scalar, MyQuat q)
@@ -92,7 +92,7 @@ namespace RobotController
             float y = axis.y * sinRotAngle;
             float z = axis.z * sinRotAngle;
 
-            return new MyQuat(x, y, z, w);
+            return new MyQuat(w, x, y, z);
         }
 
         public void ToAxisAngle(out MyVec axis, out float angle)
