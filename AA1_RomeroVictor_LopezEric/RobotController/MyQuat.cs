@@ -7,6 +7,11 @@ namespace RobotController
     {
         public static float Deg2Rad = (float)(Math.PI / 180);
         public static float Rad2Deg = (float)(180 / Math.PI);
+
+        public static float Clamp(float value, float minValue, float maxValue)
+        {
+            return (value < minValue) ? minValue : (value > maxValue) ? maxValue : value;
+        }
     }
 
 
@@ -104,37 +109,30 @@ namespace RobotController
 
         public static MyQuat Lerp(MyQuat q1, MyQuat q2, float t)
         {
+           return Add(((1 - t) * q1), (t * q2));
+        }
+
+        public static float Lerp(float begin, float end, float t)
+        {
             // (1-t) p + t q
-            //MyVec initialAxis;
-            //float initialAngle;
-            //MyVec resultingAxis;
-            //float resultingAngle;
-
-            //q1.ToAxisAngle(out initialAxis, out initialAngle);
-            //q2.ToAxisAngle(out resultingAxis, out resultingAngle);
-
-            //MyVec axisT = ((1 - t) * initialAxis) + (t * resultingAxis);
-            //float angleT = ((1 - t) * initialAngle) + (t * resultingAngle);
-
-            MyQuat result;
-
-            result = Add(((1 - t) * q1), (t * q2));
-
-
-            return result;
+            return ((1 - t) * begin) + (t * end);
 
         }
 
-        //public static MyQuat Slerp(MyQuat q1, MyQuat q2, float t)
-        //{
+        public static MyQuat Slerp(MyQuat q1, MyQuat q2, float t, float angle)
+        {
+            float f = 1.0f - 0.7878088f * (float)Math.Asin(angle);
+            float k = 0.5069269f;
+            f *= f;
+            k *= f;
+            float b = 2 * k;
+            float c = -3 * k;
+            float d = 1 + k;
+            t = t * (b * t + c) + d;
 
-        //}
+            return Lerp(q1, q2, t);
+
+        }
 
     }
-
-
-
-
-
-
 }
