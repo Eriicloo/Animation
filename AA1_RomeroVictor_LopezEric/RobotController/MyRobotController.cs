@@ -38,38 +38,44 @@ namespace RobotController
 
 
 
-        ////EX2: this function will interpolate the rotations necessary to move the arm of the robot until its end effector collides with the target (called Stud_target)
-        ////it will return true until it has reached its destination. The main project is set up in such a way that when the function returns false, the object will be droped and fall following gravity.
+        //EX2: this function will interpolate the rotations necessary to move the arm of the robot until its end effector collides with the target (called Stud_target)
+        //it will return true until it has reached its destination. The main project is set up in such a way that when the function returns false, the object will be droped and fall following gravity.
 
 
-        //public bool PickStudAnim(out MyQuat rot0, out MyQuat rot1, out MyQuat rot2, out MyQuat rot3)
-        //{
+        public bool PickStudAnim(out MyQuat rot0, out MyQuat rot1, out MyQuat rot2, out MyQuat rot3)
+        {
 
-        //    bool myCondition = false;
-        //    //todo: add a check for your condition
+            if (_currentExercise != Exercise.EX_2)
+            {
+                _currentExercise = Exercise.EX_2;
+                TimeReset();
+            }
 
-
-
-        //    if (myCondition)
-        //    {
-        //        //todo: add your code here
-        //        rot0 = NullQ;
-        //        rot1 = NullQ;
-        //        rot2 = NullQ;
-        //        rot3 = NullQ;
+            //todo: add a check for your condition
+            bool myCondition = time < 1.0f;
 
 
-        //        return true;
-        //    }
 
-        //    //todo: remove this once your code works.
-        //    rot0 = NullQ;
-        //    rot1 = NullQ;
-        //    rot2 = NullQ;
-        //    rot3 = NullQ;
+            if (myCondition)
+            {
+                rot0 = Rotate(MyQuat.NullQ, MyVec.up, MyQuat.Lerp(initialAngles[0], finalAngles[0], time));
+                rot1 = Rotate(rot0, MyVec.right, MyQuat.Lerp(initialAngles[1], finalAngles[1], time));
+                rot2 = Rotate(rot1, MyVec.right, MyQuat.Lerp(initialAngles[2], finalAngles[2], time));
+                rot3 = Rotate(rot2, MyVec.right, MyQuat.Lerp(initialAngles[3], finalAngles[3], time));
 
-        //    return false;
-        //}
+                time = Utility.Clamp(robotSpeed + time, 0.0f, 1.0f);
+
+                return true;
+            }
+
+            
+            rot0 = Rotate(MyQuat.NullQ, MyVec.up, finalAngles[0]);
+            rot1 = Rotate(rot0, MyVec.right, finalAngles[1]);
+            rot2 = Rotate(rot1, MyVec.right, finalAngles[2]);
+            rot3 = Rotate(rot2, MyVec.right, finalAngles[3]);
+
+            return false;
+        }
 
 
         ////EX3: this function will calculate the rotations necessary to move the arm of the robot until its end effector collides with the target (called Stud_target)
@@ -144,8 +150,20 @@ namespace RobotController
         private Exercise _currentExercise = Exercise.NONE;
 
         //Ex1
-        //private float[] initialAngles = { 73f, 350f, 94f, 20f };
         private float[] initialAngles = { 73f, 350f, 94f, 20f };
+
+        //Ex2
+        private float[] finalAngles = { 40f, 360f, 85f, 20f };
+
+        private float time = 0.0f;
+        private void TimeReset() 
+        {
+            time = 0.0f;
+        }
+
+        private float robotSpeed = 0.02f;
+
+
 
         #endregion
 
