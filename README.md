@@ -6,8 +6,12 @@
 **Names:**
 
   - Victor Romero
+![GitHub Image](/Images/VictorImg.jpg)
+
   
   - Eric Lopez
+![GitHub Image](/Images/EricImg.jpg)
+
 
 **Emails:**
 
